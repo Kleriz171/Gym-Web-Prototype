@@ -1,0 +1,205 @@
+@import "tailwindcss";
+
+/* ----------------------------------------------------------------------------
+   PULSE — theme tokens
+   Dark charcoal canvas, single hot-orange accent.
+---------------------------------------------------------------------------- */
+@theme {
+  --color-ink: #0a0a0a; /* page background */
+  --color-ink-soft: #111111;
+  --color-surface: #141414;
+  --color-surface-2: #1b1b1b;
+  --color-line: #262626;
+  --color-line-soft: #1f1f1f;
+
+  --color-bone: #f5f5f2; /* primary text */
+  --color-muted: #a1a1a1; /* secondary text */
+  --color-faint: #8a8a8a; /* AA-contrast on charcoal */
+
+  --color-flame: #ff5c00; /* THE accent */
+  --color-flame-soft: #ff7a33;
+  --color-flame-deep: #cc4900;
+
+  --font-display: var(--font-anton);
+  --font-sans: var(--font-manrope);
+  --font-mono: var(--font-geist-mono);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-bone);
+    font-family: var(--font-sans), system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: var(--color-flame);
+    color: #0a0a0a;
+  }
+
+  /* Hide native cursor only when our custom cursor is active (desktop, fine pointer) */
+  @media (pointer: fine) {
+    body[data-cursor="on"],
+    body[data-cursor="on"] * {
+      cursor: none;
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-flame);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display), Impact, sans-serif;
+    letter-spacing: -0.01em;
+    line-height: 0.9;
+    font-weight: 400;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Oversized fluid display sizing */
+  .display-xl {
+    font-size: clamp(3.25rem, 13vw, 13rem);
+  }
+  .display-lg {
+    font-size: clamp(2.75rem, 8vw, 7rem);
+  }
+  .display-md {
+    font-size: clamp(2rem, 5vw, 4rem);
+  }
+
+  /* mono kicker / eyebrow */
+  .kicker {
+    font-family: var(--font-mono), monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    font-size: 0.72rem;
+    color: var(--color-flame);
+  }
+
+  .text-stroke {
+    -webkit-text-stroke: 1.5px var(--color-bone);
+    color: transparent;
+  }
+  .text-stroke-flame {
+    -webkit-text-stroke: 1.5px var(--color-flame);
+    color: transparent;
+  }
+
+  /* Grain overlay */
+  .grain-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .glass {
+    background: color-mix(in srgb, var(--color-ink) 55%, transparent);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+  }
+
+  .diagonal-top {
+    clip-path: polygon(0 4vw, 100% 0, 100% 100%, 0 100%);
+  }
+  .diagonal-bottom {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4vw), 0 100%);
+  }
+
+  .flame-glow {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-flame) 40%, transparent),
+      0 10px 40px -10px color-mix(in srgb, var(--color-flame) 55%, transparent);
+  }
+
+  .grid-lines {
+    background-image:
+      linear-gradient(to right, var(--color-line-soft) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-line-soft) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+}
+
+/* Marquee */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee var(--marquee-duration, 30s) linear infinite;
+}
+.animate-marquee-rev {
+  animation: marquee var(--marquee-duration, 30s) linear infinite reverse;
+}
+
+/* Accordion (radix) */
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+.animate-accordion-down {
+  animation: accordion-down 0.3s var(--ease-out-expo);
+}
+.animate-accordion-up {
+  animation: accordion-up 0.25s var(--ease-out-expo);
+}
+
+/* Reduce everything for users who ask */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-marquee,
+  .animate-marquee-rev {
+    animation: none;
+  }
+}
