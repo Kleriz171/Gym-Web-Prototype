@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { ArrowLeft, ArrowRight, Expand } from "lucide-react";
 import { useCopy } from "@/lib/language-provider";
@@ -13,13 +14,14 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
-const tints = [
-  "radial-gradient(120% 120% at 20% 10%, #2a1708 0%, #141414 60%)",
-  "radial-gradient(120% 120% at 80% 20%, #1d1d1d 0%, #101010 60%)",
-  "radial-gradient(120% 120% at 50% 90%, #2a1708 0%, #121212 60%)",
-  "radial-gradient(120% 120% at 10% 80%, #181818 0%, #0f0f0f 60%)",
-  "radial-gradient(120% 120% at 90% 60%, #2a1708 0%, #131313 60%)",
-  "radial-gradient(120% 120% at 40% 30%, #1a1a1a 0%, #0e0e0e 60%)",
+// Facility shots are positional — order matches facilities.items in content/copy.ts.
+const photos = [
+  "/images/facilities/strength-hall.jpg",
+  "/images/facilities/combat-zone.jpg",
+  "/images/facilities/cardio-deck.jpg",
+  "/images/facilities/recovery-suite.jpg",
+  "/images/facilities/studio.jpg",
+  "/images/facilities/turf-track.jpg",
 ];
 
 export function Gallery() {
@@ -90,13 +92,15 @@ export function Gallery() {
                       onClick={() => setOpen(i)}
                       className="group relative block aspect-[4/5] w-full overflow-hidden border border-line text-left"
                     >
-                      <span
-                        className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
-                        style={{ background: tints[i % tints.length] }}
-                        aria-hidden
+                      <Image
+                        src={photos[i % photos.length]}
+                        alt={`${item.title} — ${item.caption}`}
+                        fill
+                        sizes="(max-width: 640px) 80vw, (max-width: 1024px) 48vw, 32vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                       <span
-                        className="absolute right-5 top-4 font-display text-7xl leading-none text-flame/10"
+                        className="absolute right-5 top-4 font-display text-7xl leading-none text-bone/80 mix-blend-overlay"
                         aria-hidden
                       >
                         0{i + 1}
@@ -121,11 +125,15 @@ export function Gallery() {
           <DialogContent className="overflow-hidden p-0">
             {open !== null && (
               <div className="relative">
-                <div
-                  className="aspect-video w-full"
-                  style={{ background: tints[open % tints.length] }}
-                  aria-hidden
-                />
+                <div className="relative aspect-video w-full">
+                  <Image
+                    src={photos[open % photos.length]}
+                    alt={`${t.facilities.items[open].title} — ${t.facilities.items[open].caption}`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 768px"
+                    className="object-cover"
+                  />
+                </div>
                 <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-ink to-transparent p-8">
                   <span className="kicker">{t.facilities.items[open].caption}</span>
                   <DialogTitle className="mt-1 text-4xl">

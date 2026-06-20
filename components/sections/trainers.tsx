@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   InstagramIcon,
   XIcon,
@@ -9,13 +10,13 @@ import { useCopy } from "@/lib/language-provider";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { RevealGroup, RevealItem } from "@/components/shared/reveal";
 
-function initials(name: string) {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .slice(0, 2)
-    .join("");
-}
+// Portraits are positional — order matches the trainer items in content/copy.ts.
+const portraits = [
+  "/images/trainers/ardit.jpg",
+  "/images/trainers/elira.jpg",
+  "/images/trainers/marcus.jpg",
+  "/images/trainers/sara.jpg",
+];
 
 export function Trainers() {
   const t = useCopy();
@@ -35,23 +36,19 @@ export function Trainers() {
           {t.trainers.items.map((trainer, i) => (
             <RevealItem key={trainer.name}>
               <article className="group relative aspect-[3/4] overflow-hidden border border-line bg-surface">
-                {/* Portrait placeholder (duotone) */}
+                {/* Portrait */}
+                <Image
+                  src={portraits[i % portraits.length]}
+                  alt={`${trainer.name} — ${trainer.specialty}`}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-cover grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0"
+                />
+                {/* Scrim for legibility */}
                 <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      i % 2 === 0
-                        ? "radial-gradient(120% 90% at 70% 10%, #2a1708 0%, #141414 55%, #0d0d0d 100%)"
-                        : "radial-gradient(120% 90% at 30% 10%, #1a1a1a 0%, #141414 55%, #0d0d0d 100%)",
-                  }}
+                  className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent transition-opacity duration-500 group-hover:from-ink/95"
                   aria-hidden
                 />
-                <span
-                  className="absolute right-4 top-3 font-display text-[5rem] leading-none text-flame/15 transition-colors duration-500 group-hover:text-flame/25"
-                  aria-hidden
-                >
-                  {initials(trainer.name)}
-                </span>
 
                 {/* Bottom info bar */}
                 <div className="absolute inset-x-0 bottom-0 p-5">
